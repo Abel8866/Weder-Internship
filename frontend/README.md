@@ -53,6 +53,8 @@ The `local_reports` Dexie table contains:
 - Saves locally before attempting network synchronization.
 - Queries both `pending` and `failed` reports.
 - Sends reports sequentially to `POST /api/reports/sync`.
+- Binds the browser's native `fetch` method before use so Chromium does not
+  reject it as an illegal invocation.
 - Uses a stable `Idempotency-Key` per report and capture timestamp.
 - Marks a successful HTTP response as `synced`.
 - Marks network failures, HTTP 500s, validation errors, and other non-2xx

@@ -41,16 +41,17 @@ function responseError(response, body) {
 export class OfflineSyncService {
   constructor({
     apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
-    fetchImpl = globalThis.fetch,
+    fetchImpl,
     database = localReports,
     onStateChange
   } = {}) {
-    if (typeof fetchImpl !== 'function') {
+    const resolvedFetch = fetchImpl || globalThis.fetch?.bind(globalThis);
+    if (typeof resolvedFetch !== 'function') {
       throw new Error('A fetch implementation is required for synchronization');
     }
 
     this.apiBaseUrl = apiBaseUrl.replace(/\/$/, '');
-    this.fetchImpl = fetchImpl;
+    this.fetchImpl = resolvedFetch;
     this.database = database;
     this.onStateChange = onStateChange;
     this.isOnline = globalThis.navigator?.onLine ?? true;
