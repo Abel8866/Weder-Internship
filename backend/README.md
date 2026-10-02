@@ -74,7 +74,8 @@ backend/
 
 ## API examples
 
-Create/synchronize a report:
+Create/synchronize a report. The endpoint accepts this single-report payload; a bounded
+`{ "items": [...] }` batch wrapper is also supported:
 
 ```powershell
 $headers = @{
@@ -85,7 +86,6 @@ $body = @{
   items = @(
     @{
       id = "0f2b5b62-3b44-4c74-9b0e-3cc6b2fdb1cb"
-      operation = "create"
       category = "water_pump"
       description = "Pump is leaking at the north access point"
       location = @{
@@ -96,7 +96,7 @@ $body = @{
       }
       priority = "high"
       status = "submitted"
-      clientUpdatedAt = "2026-10-02T10:42:00Z"
+      reported_at = "2026-10-02T10:42:00Z"
     }
   )
 } | ConvertTo-Json -Depth 6
@@ -142,4 +142,4 @@ Errors use this shape:
 }
 ```
 
-Validation errors are `422`, stale or invalid workflow transitions are `409`, missing idempotency headers are `400`, and unexpected server failures are `500`.
+Validation errors are `422`, stale or invalid workflow transitions are `400`, missing idempotency headers are `400`, and unexpected server failures are `500`.

@@ -110,14 +110,25 @@ function insertHistory(event) {
   `).run(event);
 }
 
-function getHistory(reportId) {
-  return db.prepare(`
+function getHistory(reportId, pagination = { page: 1, pageSize: 25 }) {
+  const total = db.prepare(`
+    SELECT COUNT(*) AS total
+    FROM report_history
+    WHERE report_id = ?
+  `).get(reportId).total;
+  const events = db.prepare(`
     SELECT id, report_id AS reportId, previous_status AS previousStatus,
       new_status AS newStatus, actor_role AS actorRole, note, timestamp
     FROM report_history
     WHERE report_id = ?
     ORDER BY timestamp ASC, id ASC
-  `).all(reportId);
+    LIMIT ? OFFSET ?
+  `).all(
+    reportId,
+    pagination.pageSize,
+    (pagination.page - 1) * pagination.pageSize
+  );
+  return { total, events };
 }
 
 function insertSyncLog(log) {

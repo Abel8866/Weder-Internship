@@ -22,7 +22,16 @@ function transitionStatus(req, res) {
 }
 
 function getHistory(req, res) {
-  res.json({ reportId: req.params.id, events: reportService.history(req.params.id) });
+  const result = reportService.history(req.params.id, req.query);
+  res.json({
+    reportId: req.params.id,
+    events: result.events,
+    pagination: {
+      page: req.query.page,
+      pageSize: req.query.pageSize,
+      total: result.total
+    }
+  });
 }
 
 module.exports = { listReports, getReport, transitionStatus, getHistory };

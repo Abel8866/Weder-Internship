@@ -3,17 +3,19 @@ const {
   getReportById,
   getSyncLog,
   insertSyncLog,
-  updateReport
+  updateReport,
+  insertHistory
 } = require('../database/repositories');
 const reportService = require('./reportService');
 const { newId, nowIso } = require('../utils/ids');
-const { conflictError, validationError } = require('../utils/errors');
+const { conflictError } = require('../utils/errors');
 
 function serializeOutcome(outcome) {
   return JSON.stringify(outcome);
 }
 
-function syncReports(items, idempotencyKey) {
+function syncReports(payload, idempotencyKey) {
+  const items = Array.isArray(payload.items) ? payload.items : [payload];
   const existingLog = getSyncLog(idempotencyKey);
   if (existingLog) {
     if (existingLog.status !== 'succeeded') {
@@ -40,12 +42,6 @@ function syncReports(items, idempotencyKey) {
         continue;
       }
 
-      if (item.operation === 'create') {
-        throw conflictError('REPORT_ALREADY_EXISTS', 'A report with this id already exists', {
-          reportId: item.id
-        });
-      }
-
       const updatedAt = nowIso();
       const updated = {
         ...current,
@@ -55,12 +51,22 @@ function syncReports(items, idempotencyKey) {
         priority: item.priority,
         status: current.status,
         updatedAt,
-        clientSyncedAt: updatedAt
+        clientSyncedAt: updatedAt,
+        createdAt: current.createdAt
       };
       updateReport(updated);
+      insertHistory({
+        id: newId(),
+        reportId: updated.id,
+        previousStatus: current.status,
+        newStatus: current.status,
+        actorRole: 'system',
+        note: 'Report Synchronized',
+        timestamp: updatedAt
+      });
       results.push({
         id: updated.id,
-        outcome: 'synced',
+        outcome: 'existing_updated',
         status: updated.status,
         serverUpdatedAt: updated.updatedAt
       });

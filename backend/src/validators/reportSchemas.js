@@ -12,6 +12,8 @@ const location = z.object({
   source: z.enum(['gps', 'manual'])
 });
 
+const reportedAt = z.string().datetime({ offset: true });
+
 const reportPayload = z.object({
   id: uuid,
   category: z.string().trim().min(1).max(100),
@@ -19,23 +21,23 @@ const reportPayload = z.object({
   location,
   priority,
   status: status.default('submitted'),
-  clientUpdatedAt: z.string().datetime({ offset: true }).optional()
+  reported_at: reportedAt
 });
 
 const syncItem = z.object({
   id: uuid,
-  operation: z.enum(['create', 'upsert']).default('upsert'),
   category: z.string().trim().min(1).max(100),
   description: z.string().trim().min(1).max(5000),
   location,
   priority,
-  status: status,
-  clientUpdatedAt: z.string().datetime({ offset: true }).optional()
+  status: status.default('submitted'),
+  reported_at: reportedAt
 });
 
-const syncRequest = z.object({
-  items: z.array(syncItem).min(1).max(50)
-});
+const syncRequest = z.union([
+  syncItem,
+  z.object({ items: z.array(syncItem).min(1).max(50) })
+]);
 
 const listQuery = z.object({
   status: z.string().optional().transform((value) => value ? value.split(',') : undefined)
@@ -55,9 +57,15 @@ const transitionRequest = z.object({
   assignee: z.string().trim().max(200).optional()
 });
 
+const historyQuery = z.object({
+  page: z.coerce.number().int().min(1).max(10000).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(25)
+});
+
 module.exports = {
   reportPayload,
   syncRequest,
   listQuery,
-  transitionRequest
+  transitionRequest,
+  historyQuery
 };

@@ -135,7 +135,6 @@ Request:
   "items": [
     {
       "id": "0f2b5b62-3b44-4c74-9b0e-3cc6b2fdb1cb",
-      "operation": "create",
       "category": "road_damage",
       "description": "Crack across west access road",
       "location": {
@@ -146,7 +145,7 @@ Request:
       },
       "priority": "high",
       "status": "submitted",
-      "clientUpdatedAt": "2026-10-02T10:42:00Z"
+      "reported_at": "2026-10-02T10:42:00Z"
     }
   ]
 }
@@ -168,7 +167,7 @@ Response `200`:
 }
 ```
 
-Status codes: `200` success/replay, `207` mixed batch outcomes if supported, `409` idempotency or version conflict, `422` validation, `500` server failure.
+Status codes: `200` success/replay, `207` mixed batch outcomes if supported, `400` invalid workflow transition or missing idempotency header, `409` idempotency conflict, `422` validation, `500` server failure.
 
 ### `GET /api/reports`
 
@@ -205,7 +204,7 @@ Request:
 }
 ```
 
-Returns `200` with the updated report and history entry. Returns `409` for stale/invalid transitions and `422` when a reason or assignee is required but missing.
+Returns `200` with the updated report and history entry. Returns `400` for stale/invalid transitions and `422` when a reason or assignee is required but missing.
 
 ### `GET /api/reports/:id/history`
 
@@ -275,4 +274,3 @@ components:
       properties:
         items: { type: array, minItems: 1, maxItems: 50 }
 ```
-

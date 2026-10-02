@@ -28,7 +28,7 @@ function createReport(payload, options = {}) {
     location: payload.location,
     priority: payload.priority,
     status: payload.status || 'submitted',
-    createdAt: options.createdAt || timestamp,
+    createdAt: options.createdAt || payload.reported_at || timestamp,
     updatedAt: timestamp,
     clientSyncedAt: options.clientSyncedAt || timestamp
   };
@@ -40,7 +40,7 @@ function createReport(payload, options = {}) {
     previousStatus: null,
     newStatus: report.status,
     actorRole: options.actorRole || 'field_worker',
-    note: options.note || null,
+    note: options.note || 'Report Created',
     timestamp
   });
   return report;
@@ -56,9 +56,9 @@ function getById(id) {
   return report;
 }
 
-function history(id) {
+function history(id, pagination) {
   getById(id);
-  return getHistory(id);
+  return getHistory(id, pagination);
 }
 
 function transition(id, payload, actorRole = 'coordinator') {
@@ -66,14 +66,14 @@ function transition(id, payload, actorRole = 'coordinator') {
     const report = getReportById(id);
     if (!report) throw new AppError(404, 'REPORT_NOT_FOUND', 'Report was not found');
     if (report.status !== payload.expectedStatus) {
-      throw conflictError('STALE_REPORT', 'Report status has changed since it was loaded', {
+      throw new AppError(400, 'INVALID_TRANSITION', 'Report status has changed since it was loaded', {
         currentStatus: report.status,
         requestedStatus: payload.newStatus,
         allowedTransitions: allowedTransitions[report.status]
       });
     }
     if (!allowedTransitions[report.status].includes(payload.newStatus)) {
-      throw conflictError('INVALID_TRANSITION', `Cannot transition from ${report.status} to ${payload.newStatus}`, {
+      throw new AppError(400, 'INVALID_TRANSITION', `Cannot transition from ${report.status} to ${payload.newStatus}`, {
         currentStatus: report.status,
         requestedStatus: payload.newStatus,
         allowedTransitions: allowedTransitions[report.status]
