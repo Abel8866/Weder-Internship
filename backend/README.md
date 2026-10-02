@@ -20,6 +20,16 @@ npm start
 
 The API listens on `http://localhost:3000` by default. The health endpoint is `GET /health`.
 
+Run the automated integration tests:
+
+```powershell
+npm test
+```
+
+The Jest/Supertest suite uses a disposable SQLite database and covers FSM
+transitions, idempotent retries, audit-history persistence, and validation
+failures without touching the development database.
+
 For development with automatic restarts:
 
 ```powershell
