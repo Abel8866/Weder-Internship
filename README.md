@@ -17,6 +17,17 @@ Field workers can capture infrastructure issues, location, priority, and observa
 
 > **Assessment focus:** local durability, zero duplicate reports on retry, explicit recovery paths, and server-enforced workflow integrity.
 
+## Assessment rubric evidence
+
+| Criterion | Evidence in this repository |
+|---|---|
+| **Problem understanding and original thinking — 20%** | The [PRD](./01-PRD.md) defines the low/no-connectivity field problem, separate worker/coordinator personas, measurable success criteria, explicit ambiguities, and edge-case behavior. The product prioritizes durable local capture over a misleading network spinner. |
+| **System thinking and architecture — 20%** | The [TRD](./02-TRD.md), [FSM specification](./04-APP-FLOW-STATE-MACHINE.md), and architecture diagram describe the React/Dexie client, durable outbox, network observer, sync worker, Express API, validation, SQLite transactions, idempotency, and audit log as one system. |
+| **Correctness and attention to detail — 20%** | Zod validation rejects malformed payloads before insertion; UUID and unique idempotency constraints prevent duplicates; the server enforces the FSM; report updates and history writes are transactional; pagination, structured errors, CORS, retry metadata, and manual/GPS location fallback are implemented. |
+| **Quality assurance and testing — 20%** | Backend Jest/Supertest tests cover valid/invalid transitions, exact-payload idempotency, row counts, audit rows, and validation. Frontend Vitest/React Testing Library tests cover offline Dexie persistence, pending queue rendering, coordinator PATCH requests, and pending-to-synced state. The [manual QA checklist](#manual-qa-verification-checklist) covers Chrome DevTools offline/recovery testing. |
+| **Source-control practices — 15%** | The repository uses incremental conventional commits such as `feat(api)`, `feat(client)`, `test(api)`, `test(client)`, `docs`, and refactoring commits. The [commit blueprint](./06-IMPLEMENTATION-PLAN-COMMIT-BLUEPRINT.md) documents the intended atomic commit sequence and reviewable scopes. |
+| **Documentation and communication — 5%** | This README provides setup, architecture, assumptions, limitations, API behavior, test priorities, QA steps, AI disclosure, and time log. The six supporting Markdown/PDF technical documents provide detailed product, technical, UX, FSM, schema, and implementation context. |
+
 ## Contents
 
 - [Product capabilities](#product-capabilities)
@@ -544,4 +555,3 @@ Approximate implementation time: **5.5 hours**.
 - [App Flow and State Machine](<./04-APP-FLOW-STATE-MACHINE.md>)
 - [Backend Schema and API Contract](<./05-BACKEND-SCHEMA-API-CONTRACT.md>)
 - [Implementation Plan and Commit Blueprint](<./06-IMPLEMENTATION-PLAN-COMMIT-BLUEPRINT.md>)
-
