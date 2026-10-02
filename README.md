@@ -549,9 +549,9 @@ Approximate implementation time: **5.5 hours**.
 
 ## Supporting documents
 
-- [Product Requirements Document](<./01-PRD.md>)
-- [Technical Requirements Document](<./02-TRD.md>)
-- [UI/UX Design Specification](<./03-UI-UX-DESIGN-SPECIFICATION.md>)
-- [App Flow and State Machine](<./04-APP-FLOW-STATE-MACHINE.md>)
-- [Backend Schema and API Contract](<./05-BACKEND-SCHEMA-API-CONTRACT.md>)
-- [Implementation Plan and Commit Blueprint](<./06-IMPLEMENTATION-PLAN-COMMIT-BLUEPRINT.md>)
+- [Product Requirements Document](<./01-PRD.pdf>)
+- [Technical Requirements Document](<./02-TRD.pdf>)
+- [UI/UX Design Specification](<./03-UI-UX-DESIGN-SPECIFICATION.pdf>)
+- [App Flow and State Machine](<./04-APP-FLOW-STATE-MACHINE.pdf>)
+- [Backend Schema and API Contract](<./05-BACKEND-SCHEMA-API-CONTRACT.pdf>)
+- [Implementation Plan and Commit Blueprint](<./06-IMPLEMENTATION-PLAN-COMMIT-BLUEPRINT.pdf>)
