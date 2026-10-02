@@ -78,7 +78,7 @@ function ConnectivityBanner({ isOnline, isSyncing, syncError, onSync }) {
     online: ['Online', 'Connected and ready to sync'],
     offline: ['Offline', 'Reports are saved on this device'],
     syncing: ['Syncing', 'Sending saved reports to the server'],
-    issues: ['Sync Issues', syncError.message]
+    issues: ['Sync Issues', syncError?.message || 'A synchronization attempt failed']
   };
   return (
     <div className={`connectivity-banner banner-${state}`} role="status" aria-live="polite">
@@ -439,9 +439,9 @@ function CoordinatorDetail({ report, onUpdated }) {
   );
 }
 
-function App() {
+export function App({ syncService = offlineSyncService }) {
   const [role, setRole] = useState('worker');
-  const { isOnline, isSyncing, syncError, reports, saveReportLocally, triggerSync } = useOfflineSync();
+  const { isOnline, isSyncing, syncError, reports, saveReportLocally, triggerSync } = useOfflineSync(syncService);
   const hasSyncIssue = useMemo(() => syncError || null, [syncError]);
   return (
     <div className="app-shell">
@@ -458,4 +458,6 @@ function App() {
   );
 }
 
-createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
+if (document.getElementById('root')) {
+  createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
+}

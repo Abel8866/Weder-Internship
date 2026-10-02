@@ -14,6 +14,16 @@ Copy-Item .env.example .env
 npm run dev
 ```
 
+Run the frontend test suite:
+
+```powershell
+npm test
+```
+
+The Vitest/React Testing Library suite uses a real Dexie database backed by
+`fake-indexeddb` and covers offline queue persistence, coordinator transition
+requests, and pending-to-synced updates after a successful API response.
+
 The frontend defaults to `http://localhost:3000` for the backend API. Change
 `VITE_API_BASE_URL` in `.env` when the API is hosted elsewhere.
 
