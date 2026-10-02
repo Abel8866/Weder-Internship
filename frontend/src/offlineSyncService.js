@@ -108,7 +108,7 @@ export class OfflineSyncService {
     }
 
     this.isSyncing = true;
-    this.emitState();
+    this.emitState({ syncError: null });
     let attempted = 0;
     let synced = 0;
 
@@ -195,4 +195,3 @@ export class OfflineSyncService {
 }
 
 export const offlineSyncService = new OfflineSyncService();
-
